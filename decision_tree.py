@@ -11,13 +11,13 @@ data['date'] = pd.to_datetime(data['Местное время в Москве (�
 data_short = data[data['date'].between('2016-10-01', '2017-03-01')]
 
 data['dayofyear'] = data['date'].dt.dayofyear
-data['cos_dayofyear'] = np.cos((data['dayofyear'] - 1) / 366 * 2 * np.pi)
+data['sin_dayofyear'] = np.sin((data['dayofyear'] - 1) / 366 * 2 * np.pi)
 
 data_train = data[data['date'] < '2020-01-01']
 data_test = data[data['date'] >= '2020-01-01']
 
-X_train = pd.DataFrame(data_train['cos_dayofyear'])
-X_test = pd.DataFrame(data_test['cos_dayofyear'])
+X_train = pd.DataFrame(data_train['sin_dayofyear'])
+X_test = pd.DataFrame(data_test['sin_dayofyear'])
 
 y_train = data_train['T']
 y_test = data_test['T']
