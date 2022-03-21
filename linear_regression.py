@@ -15,10 +15,12 @@ data = data[data['T'].notna()]
 data['date'] = pd.to_datetime(data['Местное время в Москве (ВДНХ)'], dayfirst=True)
 data_short = data[data['date'].between('2016-10-01', '2017-03-01')]
 
+data = data[data['Po'].notna()] # давление
+data = data[data['Pa'].notna()] # барические тенденции
+data = data[data['U'].notna()] # влажность
+data = data[data['Td'].notna()] # температура точки росы
+
 data['dayofyear'] = data['date'].dt.dayofyear
-data['sin_dayofyear'] = (np.sin((data['dayofyear'] - 1) / 366 * 2 * np.pi)) * 2
-data['cos_dayofyear'] = (np.cos((data['dayofyear'] - 1) / 366 * 2 * np.pi)) * 0.5
-data
 
 model = LinearRegression()
 
@@ -27,10 +29,18 @@ data_test = data[data['date'] >= '2020-01-01']
 
 X_train = pd.DataFrame()
 X_test = pd.DataFrame()
-X_train['sin_dayofyear'] = pd.DataFrame(data_train['sin_dayofyear'])
-X_train['cos_dayofyear'] = pd.DataFrame(data_train['cos_dayofyear'])
-X_test['sin_dayofyear'] = pd.DataFrame(data_test['sin_dayofyear'])
-X_test['cos_dayofyear'] = pd.DataFrame(data_test['cos_dayofyear'])
+
+X_train['dayofyear'] = pd.DataFrame(data_train['dayofyear'])
+X_train['Po'] = pd.DataFrame(data_train['Po'])
+X_train['Pa'] = pd.DataFrame(data_train['Pa'])
+X_train['U'] = pd.DataFrame(data_train['U'])
+X_train['Td'] = pd.DataFrame(data_train['Td'])
+
+X_test['dayofyear'] = pd.DataFrame(data_test['dayofyear'])
+X_test['Po'] = pd.DataFrame(data_test['Po'])
+X_test['Pa'] = pd.DataFrame(data_test['Pa'])
+X_test['U'] = pd.DataFrame(data_test['U'])
+X_test['Td'] = pd.DataFrame(data_test['Td'])
 
 y_train = data_train['T']
 y_test = data_test['T']
