@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error
 
@@ -10,17 +11,18 @@ data['date'] = pd.to_datetime(data['Местное время в Москве (�
 data_short = data[data['date'].between('2016-10-01', '2017-03-01')]
 
 data['dayofyear'] = data['date'].dt.dayofyear
+data['sin_dayofyear'] = np.sin((data['dayofyear'] - 1) / 366 * 2 * np.pi)
 
 data_train = data[data['date'] < '2020-01-01']
 data_test = data[data['date'] >= '2020-01-01']
 
-X_train = pd.DataFrame(data_train['dayofyear'])
-X_test = pd.DataFrame(data_test['dayofyear'])
+X_train = pd.DataFrame(data_train['sin_dayofyear'])
+X_test = pd.DataFrame(data_test['sin_dayofyear'])
 
 y_train = data_train['T']
 y_test = data_test['T']
 
-model = DecisionTreeRegressor(max_depth = 6)
+model = DecisionTreeRegressor()
 model.fit(X_train, y_train)
 
 pred_train = model.predict(X_train)
